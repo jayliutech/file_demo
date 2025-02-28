@@ -32,6 +32,7 @@ st.set_page_config(
 # -------------------------
 st.sidebar.header("Enter Your Credentials")
 
+# Initialize session state variables if not already set
 if "openai_api_key" not in st.session_state:
     st.session_state["openai_api_key"] = ""
 if "aws_access_key_id" not in st.session_state:
@@ -43,6 +44,7 @@ if "aws_region" not in st.session_state:
 if "S3_BUCKET_NAME" not in st.session_state:
     st.session_state["S3_BUCKET_NAME"] = ""
 
+# Option 1: Manual entry via text inputs
 st.session_state["openai_api_key"] = st.sidebar.text_input(
     "OpenAI API Key:", value=st.session_state["openai_api_key"], type="password"
 )
@@ -59,14 +61,43 @@ st.session_state["S3_BUCKET_NAME"] = st.sidebar.text_input(
     "S3 Bucket Name:", value=st.session_state["S3_BUCKET_NAME"]
 )
 
+# Option 2: Import credentials via file upload
+creds_file = st.sidebar.file_uploader("Import Credentials File", type=["txt"], key="creds_file")
+if creds_file is not None:
+    try:
+        creds_text = creds_file.read().decode("utf-8")
+        for line in creds_text.splitlines():
+            if "=" in line:
+                key, value = line.split("=", 1)
+                key = key.strip()
+                value = value.strip()
+                if key == "aws_access_key_id":
+                    st.session_state["aws_access_key_id"] = value
+                    st.sidebar.write(f"Imported {key}")
+                elif key == "aws_secret_access_key":
+                    st.session_state["aws_secret_access_key"] = value
+                    st.sidebar.write(f"Imported {key}")
+                elif key == "openai_api_key":
+                    st.session_state["openai_api_key"] = value
+                    st.sidebar.write(f"Imported {key}")
+                elif key == "aws_region":
+                    st.session_state["aws_region"] = value
+                    st.sidebar.write(f"Imported {key}")
+                elif key == "S3_BUCKET_NAME":
+                    st.session_state["S3_BUCKET_NAME"] = value
+                    st.sidebar.write(f"Imported {key}")
+        st.sidebar.success("Credentials imported successfully!")
+    except Exception as e:
+        st.sidebar.error(f"Error reading credentials file: {e}")
+
 # Validate credentials before proceeding
 if (not st.session_state["openai_api_key"] or
     not st.session_state["aws_access_key_id"] or
     not st.session_state["aws_secret_access_key"] or
-    not st.session_state["S3_BUCKET_NAME"]
-    ):
+    not st.session_state["S3_BUCKET_NAME"]):
     st.warning("Please enter your OpenAI API key and AWS credentials in the sidebar to use the app.")
     st.stop()
+
 
 # -------------------------
 # Initialize Clients Dynamically
