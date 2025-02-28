@@ -40,7 +40,7 @@ if "aws_access_key_id" not in st.session_state:
 if "aws_secret_access_key" not in st.session_state:
     st.session_state["aws_secret_access_key"] = ""
 if "aws_region" not in st.session_state:
-    st.session_state["aws_region"] = "us-east-1"
+    st.session_state["aws_region"] = ""
 if "S3_BUCKET_NAME" not in st.session_state:
     st.session_state["S3_BUCKET_NAME"] = ""
 
@@ -49,16 +49,16 @@ st.session_state["openai_api_key"] = st.sidebar.text_input(
     "OpenAI API Key:", value=st.session_state["openai_api_key"], type="password"
 )
 st.session_state["aws_access_key_id"] = st.sidebar.text_input(
-    "AWS Access Key ID:", value=st.session_state["aws_access_key_id"], type="password"
+    "Cloud Access Key:", value=st.session_state["aws_access_key_id"], type="password"
 )
 st.session_state["aws_secret_access_key"] = st.sidebar.text_input(
-    "AWS Secret Access Key:", value=st.session_state["aws_secret_access_key"], type="password"
+    "Cloud Credential Access Key:", value=st.session_state["aws_secret_access_key"], type="password"
 )
 st.session_state["aws_region"] = st.sidebar.text_input(
-    "AWS Region (default is us-east-1):", value=st.session_state["aws_region"]
+    "Cloud Access Path:", value=st.session_state["aws_region"]
 )
 st.session_state["S3_BUCKET_NAME"] = st.sidebar.text_input(
-    "S3 Bucket Name:", value=st.session_state["S3_BUCKET_NAME"]
+    "File Access Path:", value=st.session_state["S3_BUCKET_NAME"]
 )
 
 # Option 2: Import credentials via file upload
@@ -73,19 +73,19 @@ if creds_file is not None:
                 value = value.strip()
                 if key == "aws_access_key_id":
                     st.session_state["aws_access_key_id"] = value
-                    st.sidebar.write(f"Imported {key}")
+                    st.sidebar.write(f"Imported cloud access key")
                 elif key == "aws_secret_access_key":
                     st.session_state["aws_secret_access_key"] = value
-                    st.sidebar.write(f"Imported {key}")
+                    st.sidebar.write(f"Imported cloud credentials access key")
                 elif key == "openai_api_key":
                     st.session_state["openai_api_key"] = value
-                    st.sidebar.write(f"Imported {key}")
+                    st.sidebar.write(f"Imported openai api key")
                 elif key == "aws_region":
                     st.session_state["aws_region"] = value
-                    st.sidebar.write(f"Imported {key}")
+                    st.sidebar.write(f"Imported cloud access path")
                 elif key == "S3_BUCKET_NAME":
                     st.session_state["S3_BUCKET_NAME"] = value
-                    st.sidebar.write(f"Imported {key}")
+                    st.sidebar.write(f"Imported file access path")
         st.sidebar.success("Credentials imported successfully!")
     except Exception as e:
         st.sidebar.error(f"Error reading credentials file: {e}")
