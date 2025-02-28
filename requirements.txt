@@ -1,1 +1,5 @@
-streamlit
+streamlit==1.39.0
+boto3==1.35.36
+botocore==1.35.36
+pydantic==2.8.0
+openai==1.57.4
