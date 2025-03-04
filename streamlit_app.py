@@ -326,8 +326,10 @@ saved_order = [
     "ImageFile.9", "ImageFile.10"
 ]
 
+
 def generate_sku(prefix):
-    return f"{prefix}{uuid.uuid4().hex[:7]}"
+    return f"{prefix.upper()}-{int(uuid.uuid4().int) % 10**8}"
+
 
 def translate_text(text, target_language="en"):
     response = openai_client.beta.chat.completions.parse(
