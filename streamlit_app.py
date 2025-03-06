@@ -328,7 +328,7 @@ saved_order = [
 
 
 def generate_sku(prefix):
-    return f"{prefix.upper()}-{int(uuid.uuid4().int) % 10**8}"
+    return f"{prefix.upper()}-{int(uuid.uuid4().int) % 10**10}"
 
 
 def translate_text(text, target_language="en"):
