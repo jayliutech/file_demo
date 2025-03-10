@@ -289,11 +289,20 @@ if "sku_prefix" not in st.session_state:
 if "generated_sku" not in st.session_state:
     st.session_state["generated_sku"] = ""
 
+if "input_title" not in st.session_state:
+    st.session_state["input_title"] = ""
+
 if "translated_title" not in st.session_state:
     st.session_state["translated_title"] = ""
 
+if "input_description" not in st.session_state:
+    st.session_state["input_description"] = ""
+
 if "translated_description" not in st.session_state:
     st.session_state["translated_description"] = ""
+
+if "item_memo" not in st.session_state:
+    st.session_state["item_memo"] = ""
 
 if "original_price" not in st.session_state:
     st.session_state["original_price"] = 0
@@ -311,7 +320,7 @@ if "dataframe" not in st.session_state:
     st.session_state["dataframe"] = pd.DataFrame()
 
 desired_order = [
-    "Sku", "Title", "Description", "original_price", "discounted_price",
+    "Sku", "Input_Title", "Input_Description", "Item_Memo", "Title", "Description", "original_price", "discounted_price",
     "Preview_ImageFile.1", "ImageFile.1", "Preview_ImageFile.2", "ImageFile.2",
     "Preview_ImageFile.3", "ImageFile.3", "Preview_ImageFile.4", "ImageFile.4",
     "Preview_ImageFile.5", "ImageFile.5", "Preview_ImageFile.6", "ImageFile.6",
@@ -320,7 +329,7 @@ desired_order = [
 ]
 
 saved_order = [
-    "Sku", "Title", "Description", "original_price", "discounted_price", 
+    "Sku", "Input_Title", "Input_Description", "Item_Memo", "Title", "Description", "original_price", "discounted_price", 
     "ImageFile.1", "ImageFile.2", "ImageFile.3", "ImageFile.4",
     "ImageFile.5", "ImageFile.6", "ImageFile.7", "ImageFile.8", 
     "ImageFile.9", "ImageFile.10"
@@ -450,6 +459,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 title = st.text_input("Enter Title:")
 if st.button("Translate Title"):
     translated_title = translate_text(title)
+    st.session_state["input_title"] = title
     st.session_state["translated_title"] = translated_title
 st.text_area("Translated Title (Editable):", value=st.session_state.get("translated_title", ""), 
              key="translated_title_editable", height=100)
@@ -460,10 +470,16 @@ st.markdown("<hr>", unsafe_allow_html=True)
 description = st.text_area("Enter Description:")
 if st.button("Translate Description"):
     translated_description = translate_text(description)
+    st.session_state["input_description"] = description
     st.session_state["translated_description"] = translated_description
 st.text_area("Translated Description (Editable):", value=st.session_state.get("translated_description", ""),
              key="translated_description_editable", height=200)
 st.session_state["translated_description"] = st.session_state["translated_description_editable"]
+
+st.markdown("<hr>", unsafe_allow_html=True)
+
+item_memo = st.text_area("Enter Item Memo:")
+st.session_state["item_memo"] = item_memo
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -550,6 +566,9 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.header("Data Preview")
 data = {
     "Sku": st.session_state["generated_sku"],
+    "Input_Title": st.session_state["input_title"],
+    "Input_Description": st.session_state["input_description"],
+    "Item_Memo": st.session_state["item_memo"],
     "Title": st.session_state["translated_title"],
     "Description": st.session_state["translated_description"],
     "original_price": st.session_state["original_price"],
@@ -603,6 +622,9 @@ if st.button("Click to refresh and view data in Table (with image previews attac
 # Define column configuration with ImageColumn for the preview image columns
 column_config_table = {
     "Sku": st.column_config.TextColumn("SKU"),
+    "Input_Title": st.column_config.TextColumn("Input Title"),
+    "Input_Description": st.column_config.TextColumn("Input Description"),
+    "Item_Memo": st.column_config.TextColumn("Item Memo"),
     "Title": st.column_config.TextColumn("Title"),
     "Description": st.column_config.TextColumn("Description"),
     "original_price": st.column_config.NumberColumn("Original Price"),
