@@ -439,12 +439,12 @@ st.markdown("<hr>", unsafe_allow_html=True)
 st.header("Input Section")
 file_name = st.text_input("Enter File Name for CSV (no need to add .csv):",
                           value=st.session_state["file_name"],
-                          key="file_name_input")
+                          key="file_name_input", help="Step 1 of each file preparation. Enter the desired file name for the CSV without the .csv extension.")
 st.session_state["file_name"] = file_name
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-sku_prefix = st.text_input("Enter SKU Prefix:", value=st.session_state["sku_prefix"])
+sku_prefix = st.text_input("Enter SKU Prefix:", value=st.session_state["sku_prefix"], help="You can put some meaningful prefix to each category.")
 st.session_state["sku_prefix"] = sku_prefix
 if st.button("Generate SKU"):
     sku = generate_sku(sku_prefix)
@@ -456,7 +456,7 @@ st.session_state["generated_sku"] = st.session_state["generated_sku_editable"]
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-title = st.text_input("Enter Title:")
+title = st.text_input("Enter Title:", help="In Chinese or English")
 if st.button("Translate Title"):
     translated_title = translate_text(title)
     st.session_state["input_title"] = title
@@ -467,7 +467,7 @@ st.session_state["translated_title"] = st.session_state["translated_title_editab
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-description = st.text_area("Enter Description:")
+description = st.text_area("Enter Description:", help="In Chinese or English")
 if st.button("Translate Description"):
     translated_description = translate_text(description)
     st.session_state["input_description"] = description
@@ -478,7 +478,7 @@ st.session_state["translated_description"] = st.session_state["translated_descri
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-item_memo = st.text_area("Enter Item Memo:")
+item_memo = st.text_area("Enter Item Memo:", help="To help you remember something about this item.")
 st.session_state["item_memo"] = item_memo
 
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -493,18 +493,19 @@ percentage = st.number_input("Set Discount Percentage (%):",
                              min_value=0.0,
                              max_value=100.0,
                              step=0.1,
-                             value=float(st.session_state.get("percentage", 100.0)))
+                             value=float(st.session_state.get("percentage", 100.0)),
+                             help="Set a discount for the Auction.")
 st.session_state["percentage"] = percentage
 
 calculated_discount_price = math.ceil(original_price * (percentage / 100.0))
 st.session_state["discount_price"] = calculated_discount_price
 
-discount_price = st.number_input("Auction House Price in USD (Editable):",
+discount_price = st.number_input("Discounted Price in USD (Editable):",
                                       min_value=0.0,
                                       step=0.5,
                                       value=float(st.session_state.get("discount_price", calculated_discount_price)))
 if discount_price != calculated_discount_price:
-    st.warning("The Auction House Price has been manually modified. Ensure the value is correct.")
+    st.warning("The Discounted Price has been manually modified. Ensure the value is correct.")
 st.session_state["discount_price"] = discount_price
 
 st.markdown("<hr>", unsafe_allow_html=True)
@@ -564,6 +565,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 # Section 3: Upload Data
 st.header("Data Preview")
+st.info("Preview of the above item.")
 data = {
     "Sku": st.session_state["generated_sku"],
     "Input_Title": st.session_state["input_title"],
@@ -594,6 +596,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 # Section 4: Dynamic Table View
 st.header("Table View")
+st.info("Table view of all the input items.")
 if st.button("Click to refresh and view data in Table (with image previews attached)"):
     # Check that required fields are non-empty after stripping whitespace
     if not (data.get("Sku", "").strip() and data.get("Title", "").strip() and data.get("Description", "").strip()):
